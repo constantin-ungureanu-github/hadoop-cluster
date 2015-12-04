@@ -13,17 +13,13 @@ Run:
 > vagrant plugin install vagrant-vbguest
 
 ## Step 3 - Configure
-Configure the hadoop cluster by editing the Vagrantfile and hosts files.
-The existing example has a 3 nodes. If want to add more nodes, simply define more nodes similarly with the existing ones in Vagrantfile, and add their private IPs to the hosts file. Also can modify the CPUs and memory options. Add the mapping IP-hostname for the desired nodes to the local machine. In our example with 3 nodes, just add following to C:\Windows\System32\drivers\etc\hosts if using Windows or to /etc/hosts if Linux.
+Configure the Hadoop cluster by editing the Vagrantfile and hosts files. The existing example has 3 nodes. To add more nodes, simply define more nodes similarly with the existing ones in Vagrantfile, and add their private IPs to the hosts file. Also can modify the CPUs and memory options. Add the mapping IP-hostname for the desired nodes to the local machine. In our example with 3 nodes, just add following to C:\Windows\System32\drivers\etc\hosts if using Windows or to /etc/hosts if Linux.
 
 > 192.168.66.101 hadoop01.ambari.apache.org
 
 > 192.168.66.102 hadoop02.ambari.apache.org
 
 > 192.168.66.103 hadoop03.ambari.apache.org
-
-There is a bug with snappy package in Ambari 2.1.2.1 with Oracle Linux, because Oracle Linux has a newer version already installed.
-If that bug is fixed, remove "yum remove snappy -y" from bootstrap.sh
 
 ## Step 4 - Create local cluster
 Run:
@@ -63,5 +59,13 @@ To specify the nodes, simply add as following:
 > hadoop03.ambari.apache.org
 
 To specify the key, use the key file from this repo.
+
+There is a bug with snappy package in Ambari 2.1.2.1 with Oracle Linux, because Oracle Linux has a newer version already installed.
+
+Run on each node:
+
+> yum remove snappy -y; -y install snappy-devel
+
+Press retry button.
 
 Have fun!
