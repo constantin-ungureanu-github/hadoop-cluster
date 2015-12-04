@@ -35,8 +35,7 @@ yum repolist
 yum install ambari-server
 
 There is a bug with snappy package in Ambari 2.1.2.1 with Oracle Linux, because Oracle Linux has a newer version already installed.
-Run:
-yum remove snappy -y; yum install snappy-devel -y
+If that bug is fixed can remove "yum remove snappy -y" from bootstrap.sh
 
 Step 6 - Setup and Install Ambari
 The instructions are here: http://docs.hortonworks.com/HDPDocuments/Ambari-2.1.2.1/bk_Installing_HDP_AMB/content/_set_up_the_ambari_server.html
@@ -49,12 +48,11 @@ Step 7 - Install Hadoop using Ambari
 Open your web browser (assuming your first node is hadoop01, where Ambari is installed): http://hadoop01.ambari.apache.org:8080/#/login
 Follow the steps described here: http://docs.hortonworks.com/HDPDocuments/Ambari-2.1.2.1/bk_Installing_HDP_AMB/content/ch_Deploy_and_Configure_a_HDP_Cluster.html
 
-When asking for the key use insecure_private_key.
+When asking for the key, use the insecure_private_key in this repo.
 
-To specify the nodes simply add as following:
+To specify the nodes, simply add as following:
 hadoop01.ambari.apache.org
 hadoop02.ambari.apache.org
 hadoop03.ambari.apache.org
 
-
-Have fun.
+Have fun!
