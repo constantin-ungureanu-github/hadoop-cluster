@@ -64,7 +64,7 @@ There is a bug with snappy package in Ambari 2.1.2.1 with Oracle Linux, because 
 
 Run on each node:
 
-> yum remove snappy -y; -y install snappy-devel
+> yum remove snappy -y; yum install snappy-devel -y
 
 Press retry button.
 
