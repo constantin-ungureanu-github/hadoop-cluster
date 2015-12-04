@@ -21,6 +21,9 @@ In our example with 3 nodes, just add following to C:\Windows\System32\drivers\e
 192.168.66.102 hadoop02.ambari.apache.org
 192.168.66.103 hadoop03.ambari.apache.org
 
+There is a bug with snappy package in Ambari 2.1.2.1 with Oracle Linux, because Oracle Linux has a newer version already installed.
+If that bug is fixed, remove "yum remove snappy -y" from bootstrap.sh
+
 Step 4 - Create local cluster
 Run:
 vagrant up
@@ -34,9 +37,6 @@ wget -nv http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.1.2.1
 yum repolist
 yum install ambari-server
 
-There is a bug with snappy package in Ambari 2.1.2.1 with Oracle Linux, because Oracle Linux has a newer version already installed.
-If that bug is fixed can remove "yum remove snappy -y" from bootstrap.sh
-
 Step 6 - Setup and Install Ambari
 The instructions are here: http://docs.hortonworks.com/HDPDocuments/Ambari-2.1.2.1/bk_Installing_HDP_AMB/content/_set_up_the_ambari_server.html
 
@@ -48,11 +48,11 @@ Step 7 - Install Hadoop using Ambari
 Open your web browser (assuming your first node is hadoop01, where Ambari is installed): http://hadoop01.ambari.apache.org:8080/#/login
 Follow the steps described here: http://docs.hortonworks.com/HDPDocuments/Ambari-2.1.2.1/bk_Installing_HDP_AMB/content/ch_Deploy_and_Configure_a_HDP_Cluster.html
 
-When asking for the key, use the insecure_private_key in this repo.
-
 To specify the nodes, simply add as following:
 hadoop01.ambari.apache.org
 hadoop02.ambari.apache.org
 hadoop03.ambari.apache.org
+
+To specify the key, use the insecure_private_key file from this repo.
 
 Have fun!
