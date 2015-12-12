@@ -132,7 +132,7 @@ Run on host machine:
 
 "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" modifyhd data.vdi --compact
 
-The resulted box can be found here: https://drive.google.com/file/d/0B7rIW58QtdfOamdxVkFXQ3FOdWM
+The resulted box can be found here: https://drive.google.com/file/d/0B7rIW58QtdfOVjFIUmVqQmQtbjA/view?usp=sharing
 
 
 ###add box
@@ -187,6 +187,8 @@ Run on first node:
 > ambari-server setup
 
 > ambari-server start
+
+> chkconfig ambari-server on
 
 ## Step 7 - Install Hadoop using Ambari
 
