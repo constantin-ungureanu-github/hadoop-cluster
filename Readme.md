@@ -2,39 +2,46 @@
 
 ## Step 1 - Add prerequisites
 
-Install latest Vagrant and VirtualBox.
+Install latest Vagrant (with dependencies) and VirtualBox (with extension pack).
+
+If installing on Windows, make sure Microsoft Visual C++ 2010 SP1 Redistributable Package is installed:
+
+https://www.microsoft.com/en-us/download/details.aspx?id=8328
+
+https://www.microsoft.com/en-us/download/details.aspx?id=13523
 
 Run on host machine:
 
 > vagrant plugin install vagrant-vbguest
 
+
 ## Step 2 - Add Vagrant box
 
-###Install Oracle Linux 7.2
+###Install CentOS 7 / Oracle Linux 7.2
 
 2 CPUs
 
 8 GB RAM
 
-80 GB root partition and swap
+80 GB root.vdi, / root(64G) and swap (16G) partitions
 
-160 GB /data partition
+160 GB data.vdi, /data partition (160)
 
 2 networks, one NAT (forwarding rule ssh:tcp:[blank]:2222:[blank]:22), one host only
 
-disable audio, usb
+disable audio
 
 ### install Linux
 
 security policy off
 
-infrastructure server
+infrastructure server or minimal
 
 no LVM but standard partitions
 
 XFS filesystem
 
-enable network interfaces
+check automatically connect network interfaces, can disable IPV6
 
 hostname localhost
 
@@ -60,7 +67,7 @@ add user vagrant with password vagrant in group admin
 
 > echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
-> nano /etc/selinux/config
+> vi /etc/selinux/config
 
   SELINUX=disabled
 
@@ -90,11 +97,23 @@ add user vagrant with password vagrant in group admin
 > systemctl enable ntpd; systemctl start ntpd; chkconfig ntpd on
 
 
-### install Vbguest
+### install Virtualbox extensions dependencies
 
-Insert from Virtualbox the additional tools
+> yum clean all 
+
+> yum update
+
+For Oracle Linux:
 
 > yum install -y gcc make bzip2 kernel-uek-devel-`uname -r`
+
+For CentOS:
+
+> yum install -y gcc make bzip2 kernel-devel-`uname -r`
+
+### install Virtualbox extensions 
+
+Insert from Virtualbox the additional tools (Devices -> Insert Guest Additions CD image).
 
 > mount /dev/cdrom /mnt
 
@@ -127,12 +146,13 @@ Insert from Virtualbox the additional tools
 
 > shutdown -h now
 
-
 ### compact
 
 Run on host machine:
 
-"C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" modifyhd hadoop.vdi --compact
+> cd [Path to VM]
+
+"C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" modifyhd root.vdi --compact
 
 "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" modifyhd data.vdi --compact
 
@@ -140,11 +160,10 @@ Run on host machine:
 
 Run on host machine:
 
-> vagrant package --output <path>hadoop.box --base hadoop
+> vagrant package --output hadoop.box --base hadoop
 
-> vagrant box add hadoop <path>hadoop.box
+> vagrant box add hadoop hadoop.box
 
-A resulted box (Using VirtualBox 5.0.12) can be found here: https://drive.google.com/open?id=0B7rIW58QtdfOamJHOEt1cUJzSnM
 
 ## Step 3 - Configure
 
@@ -162,27 +181,30 @@ In our example with 3 nodes, just add following to C:\Windows\System32\drivers\e
 
 > 192.168.66.103 hadoop03.ambari.apache.org
 
+
 ## Step 4 - Create local cluster
 
-Run:
+From the current folder with the Vagrant file run:
 
 > vagrant up
 
+
 ## Step 5 - Download Ambari.
 
-Current version is 2.2.0.0. The instruction are here: http://docs.hortonworks.com/HDPDocuments/Ambari-2.2.0.0/bk_Installing_HDP_AMB/content/_download_the_ambari_repo_lnx7.html
+Current version is 2.2.1.1. The instruction are here: http://docs.hortonworks.com/HDPDocuments/Ambari-2.2.1.1/bk_Installing_HDP_AMB/content/_download_the_ambari_repo_lnx7.html
 
-Run on first node (can use Putty to connect to that node with root/vagrant credentials or run "vagrant ssh hadoop01" to your host console):
+Run on first node (can use Putty to connect to that node 192.168.66.101:22 with root/vagrant credentials or run "vagrant ssh hadoop01" to your host console):
 
-> wget -nv http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.2.0.0/ambari.repo -O /etc/yum.repos.d/ambari.repo
+> wget -nv http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.2.1.1/ambari.repo -O /etc/yum.repos.d/ambari.repo
 
 > yum repolist
 
 > yum install ambari-server
 
+
 ## Step 6 - Setup and Install Ambari
 
-The instructions are here: http://docs.hortonworks.com/HDPDocuments/Ambari-2.2.0.0/bk_Installing_HDP_AMB/content/_set_up_the_ambari_server.html
+The instructions are here: http://docs.hortonworks.com/HDPDocuments/Ambari-2.2.1.1/bk_Installing_HDP_AMB/content/_set_up_the_ambari_server.html
 
 Run on first node:
 
@@ -190,11 +212,12 @@ Run on first node:
 
 > ambari-server start
 
+
 ## Step 7 - Install Hadoop using Ambari
 
 Open your web browser (assuming your first node is hadoop01, where Ambari is installed): http://hadoop01.ambari.apache.org:8080/#/login
 
-Follow the steps described here: http://docs.hortonworks.com/HDPDocuments/Ambari-2.2.0.0/bk_Installing_HDP_AMB/content/ch_Deploy_and_Configure_a_HDP_Cluster.html
+Follow the steps described here: http://docs.hortonworks.com/HDPDocuments/Ambari-2.2.1.1/bk_Installing_HDP_AMB/content/ch_Deploy_and_Configure_a_HDP_Cluster.html
 
 To specify the nodes, simply add as following:
 
@@ -212,6 +235,6 @@ If that happens, let it fail on all the nodes, and then run on each node:
 
 > yum remove snappy -y; yum install snappy-devel -y
 
-Go back to web page and pess retry button. Now it should work.
+Go back to web page and press retry button. Now it should work.
 
 Have fun!
