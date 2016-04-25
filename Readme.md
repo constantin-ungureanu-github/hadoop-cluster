@@ -17,21 +17,21 @@ Run on host machine:
 
 ## Step 2 - Add Vagrant box
 
-###Install CentOS 7 / Oracle Linux 7.2
+### Add VirtualBox VM
 
 2 CPUs
 
 8 GB RAM
 
-80 GB root.vdi, / root(64G) and swap (16G) partitions
+80 GB root.vdi, root(64G) and swap (16G) partitions
 
-160 GB data.vdi, /data partition (160)
+160 GB data.vdi, data partition (160)
 
 2 networks, one NAT (forwarding rule ssh:tcp:[blank]:2222:[blank]:22), one host only
 
 disable audio
 
-### install Linux
+### Install CentOS 7 / Oracle Linux 7.2
 
 security policy off
 
@@ -49,9 +49,11 @@ add root password: vagrant
 
 add user vagrant with password vagrant in group admin
 
-### connect with putty 127.0.0.1:2222 root / vagrant
+### Connect with Putty
 
-### update
+127.0.0.1:2222 root / vagrant
+
+### Update
 
 > yum clean all
 
@@ -59,21 +61,19 @@ add user vagrant with password vagrant in group admin
 
 > reboot
 
-### disable firewall, SELinux, requiretty
+### Disable firewall, SELinux, requiretty
 
 > systemctl stop firewalld; systemctl disable firewalld; chkconfig firewalld off
+
+> sed -i 's/^SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
 
 > sed -i 's/^\(Defaults.*requiretty\)/#\1/' /etc/sudoers
 
 > echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
-> vi /etc/selinux/config
-
-  SELINUX=disabled
-
 > reboot
 
-### add key
+### Add key
 
 > mkdir -m 0700 -p /root/.ssh
 
@@ -88,7 +88,7 @@ add user vagrant with password vagrant in group admin
 > chown -R vagrant:vagrant /home/vagrant/.ssh
 
 
-### install ntp
+### Install NTP
 
 > yum remove -y chrony; yum install -y ntp ntpdate
 
@@ -96,8 +96,7 @@ add user vagrant with password vagrant in group admin
 
 > systemctl enable ntpd; systemctl start ntpd; chkconfig ntpd on
 
-
-### install Virtualbox extensions dependencies
+### Install Virtualbox extensions dependencies
 
 > yum clean all 
 
@@ -105,13 +104,13 @@ add user vagrant with password vagrant in group admin
 
 For Oracle Linux:
 
-> yum install -y gcc make bzip2 kernel-uek-devel-`uname -r`
+> yum install -y gcc make bzip2 kernel-uek-devel-\`uname -r\`
 
 For CentOS:
 
-> yum install -y gcc make bzip2 kernel-devel-`uname -r`
+> yum install -y gcc make bzip2 kernel-devel-\`uname -r\`
 
-### install Virtualbox extensions 
+### Install Virtualbox extensions 
 
 Insert from Virtualbox the additional tools (Devices -> Insert Guest Additions CD image).
 
@@ -123,8 +122,7 @@ Insert from Virtualbox the additional tools (Devices -> Insert Guest Additions C
 
 > reboot
 
-
-### clean
+### Clean
 
 > yum clean all
 
@@ -146,7 +144,7 @@ Insert from Virtualbox the additional tools (Devices -> Insert Guest Additions C
 
 > shutdown -h now
 
-### compact
+### Compact
 
 Run on host machine:
 
@@ -156,14 +154,13 @@ Run on host machine:
 
 "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" modifyhd data.vdi --compact
 
-### add box
+### Add the box to Vagrant
 
 Run on host machine:
 
 > vagrant package --output hadoop.box --base hadoop
 
 > vagrant box add hadoop hadoop.box
-
 
 ## Step 3 - Configure
 
@@ -181,15 +178,13 @@ In our example with 3 nodes, just add following to C:\Windows\System32\drivers\e
 
 > 192.168.66.103 hadoop03.ambari.apache.org
 
-
 ## Step 4 - Create local cluster
 
 From the current folder with the Vagrant file run:
 
 > vagrant up
 
-
-## Step 5 - Download Ambari.
+## Step 5 - Download Ambari
 
 Current version is 2.2.1.1. The instruction are here: http://docs.hortonworks.com/HDPDocuments/Ambari-2.2.1.1/bk_Installing_HDP_AMB/content/_download_the_ambari_repo_lnx7.html
 
@@ -201,7 +196,6 @@ Run on first node (can use Putty to connect to that node 192.168.66.101:22 with 
 
 > yum install ambari-server
 
-
 ## Step 6 - Setup and Install Ambari
 
 The instructions are here: http://docs.hortonworks.com/HDPDocuments/Ambari-2.2.1.1/bk_Installing_HDP_AMB/content/_set_up_the_ambari_server.html
@@ -211,7 +205,6 @@ Run on first node:
 > ambari-server setup
 
 > ambari-server start
-
 
 ## Step 7 - Install Hadoop using Ambari
 
@@ -227,14 +220,14 @@ To specify the nodes, simply add as following:
 
 > hadoop03.ambari.apache.org
 
-To specify the key, use the key file from this repo.
+To specify the key, use the insecure_private_key file from this repo (the Vagrant insecure key).
 
-There is a bug with snappy package in Ambari with Oracle Linux, because Oracle Linux has a newer version already installed.
+### Errors
 
-If that happens, let it fail on all the nodes, and then run on each node:
+* If the Ambari fails, keep hitting retry. With Ambari-2.2.1.1 there're some issues with the repos for CentOS.
+
+* There is a bug with snappy package in Ambari with Oracle Linux, because Oracle Linux has a newer version already installed. If that happens, let it fail on all the nodes, and then run on each nodeas bellow. Go back to web page and press retry button. Now it should work.
 
 > yum remove snappy -y; yum install snappy-devel -y
 
-Go back to web page and press retry button. Now it should work.
-
-Have fun!
+# Have fun
