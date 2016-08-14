@@ -3,3 +3,4 @@
 192.168.66.101 hadoop01.ambari.apache.org hadoop01
 192.168.66.102 hadoop02.ambari.apache.org hadoop02
 192.168.66.103 hadoop03.ambari.apache.org hadoop03
+192.168.66.104 hadoop04.ambari.apache.org hadoop04
