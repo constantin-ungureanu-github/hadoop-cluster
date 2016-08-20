@@ -70,7 +70,7 @@ add user vagrant with password vagrant in group admin
 
 > systemctl stop NetworkManager; systemctl disable NetworkManager; chkconfig NetworkManager off
 
-> chkconfig network on; systemctl enable network; systemctl start network
+> chkconfig network on; systemctl start network
 
 > sed -i 's/^SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
 
@@ -103,6 +103,14 @@ add user vagrant with password vagrant in group admin
 > systemctl enable ntpdate; chkconfig ntpdate on; ntpdate pool.ntp.org
 
 > systemctl enable ntpd; systemctl start ntpd; chkconfig ntpd on
+
+### Remove old kernels if necessarily
+
+> rpm -q kernel
+
+> yum remove -y kernel-3.10.0-327.el7.x86_64
+
+> reboot
 
 ### Install Virtualbox extensions dependencies
 
