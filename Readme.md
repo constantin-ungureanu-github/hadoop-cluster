@@ -40,7 +40,11 @@ no LVM but standard partitions
 
 XFS filesystem
 
-automatically connect network interfaces, can disable IPV6
+automatically connect network interfaces, disable IPV6
+
+network 1 Automatic (DHCP)
+
+network 2 Automatic (DHCP) addresses only
 
 hostname localhost
 
@@ -60,15 +64,21 @@ add user vagrant with password vagrant in group admin
 
 > reboot
 
-### Disable firewall, SELinux, requiretty
+### Disable NetworkManager, firewall, SELinux, requiretty
 
 > systemctl stop firewalld; systemctl disable firewalld; chkconfig firewalld off
+
+> systemctl stop NetworkManager; systemctl disable NetworkManager; chkconfig NetworkManager off
+
+> chkconfig network on; systemctl enable network; systemctl start network
 
 > sed -i 's/^SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
 
 > sed -i 's/^\\(Defaults.*requiretty\\)/#\\1/' /etc/sudoers
 
 > echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+> yum remove NetworkManager -y
 
 > reboot
 
@@ -85,7 +95,6 @@ add user vagrant with password vagrant in group admin
 > chmod 600 /home/vagrant/.ssh/authorized_keys
 
 > chown -R vagrant:vagrant /home/vagrant/.ssh
-
 
 ### Install NTP
 
