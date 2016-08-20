@@ -44,7 +44,7 @@ automatically connect network interfaces, disable IPV6
 
 network 1 Automatic (DHCP)
 
-network 2 Automatic (DHCP) addresses only
+network 2 Link-local only
 
 hostname localhost
 
@@ -70,15 +70,15 @@ add user vagrant with password vagrant in group admin
 
 > systemctl stop NetworkManager; systemctl disable NetworkManager; chkconfig NetworkManager off
 
-> chkconfig network on; systemctl start network
+> yum remove NetworkManager -y
+
+> systemctl start network; chkconfig network on
 
 > sed -i 's/^SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
 
 > sed -i 's/^\\(Defaults.*requiretty\\)/#\\1/' /etc/sudoers
 
 > echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-
-> yum remove NetworkManager -y
 
 > reboot
 
@@ -152,7 +152,7 @@ Insert from Virtualbox the additional tools (Devices -> Insert Guest Additions C
 
 > rm -f .bash_history
 
-> shutdown -h now
+> shutdown now
 
 ### Compact
 
